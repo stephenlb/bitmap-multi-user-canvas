@@ -38,14 +38,20 @@ div#colors color {
 }
 
 div#colors color:active {
-    scale: 0.4;
+    scale: 0.9;
+}
+
+div#colors color.active {
+    border: 2px solid white;
+    box-shadow: 0 0 10px white;
+    transform: scale(1.1);
 }
 </style>
 
 <canvas id=canvas width=500 height=500></canvas>
 
 <div id=colors>
-    <color hex=#ff0000></color>
+    <color hex=#ff0000 class="active"></color> 
     <color hex=#00ff00></color>
     <color hex=#0000ff></color>
     <color hex=#ffff00></color>
@@ -60,6 +66,7 @@ div#colors color:active {
 // TODO add canvas load history
 // TODO context per remote user ( so each user can draw )
 // TODO add number ONLINE USERS
+
 // TODO mobile support (on touchstart touchend touchmove )
 // TODO draw line between last and current position
 // TODO check when mouse click is down <-- WARNING mobile
@@ -79,23 +86,11 @@ let drawing      = false;
 // Fill background with dark mode because Janlu
 context.fillStyle = "#181818";
 context.fillRect(0, 0, canvas.width, canvas.height);
-
-// Set remote context draw styel
-remoteCtx.lineWidth = 5;
-remoteCtx.fillStyle = 'red';
-remoteCtx.strokeStyle = 'red';
-
-// Set draw style
+// Set draw style  
 context.lineWidth = 5;
 context.fillStyle = 'red';
 context.strokeStyle = 'red';
 
-canvas.addEventListener( 'touchstart', (event) => {
-    drawing = true;
-    context.beginPath();
-    const coords = getXY(event);
-    context.moveTo(coords.x, coords.y);
-});
 canvas.addEventListener( 'mousedown', (event) => {
     drawing = true;
     context.beginPath();
@@ -105,26 +100,6 @@ canvas.addEventListener( 'mousedown', (event) => {
 canvas.addEventListener( 'mouseup', (event) => {
     drawing = false;
 });
-canvas.addEventListener( 'touchend', (event) => {
-    drawing = false;
-});
-canvas.addEventListener( 'touchmove', (event) => {
-    if (!drawing) return;
-    const coords = getXY(event);
-    const x = coords.x;
-    const y = coords.y;
-    context.lineTo(x, y);
-    context.stroke(); 
-
-    // Prevent broadcast unless we have enough data
-    if (previous.x) {
-        broadcast(previous.x, previous.y, x, y, context.strokeStyle);
-    }
-
-    // Save last position for connecting lines on subscription
-    previous.x = x;
-    previous.y = y;
-});
 canvas.addEventListener( 'mousemove', (event) => {
     if (!drawing) return;
     const coords = getXY(event);
@@ -132,10 +107,9 @@ canvas.addEventListener( 'mousemove', (event) => {
     const y = coords.y;
     context.lineTo(x, y);
     context.stroke(); 
-
-    // Prevent broadcast unless we have enough data
-    if (previous.x) {
-        broadcast(previous.x, previous.y, x, y, context.strokeStyle);
+        // Prevent broadcast unless we have enough data
+    if (previous.x){
+        broadcast(previous.x, x, previous.y, y, context.strokeStyle);
     }
 
     // Save last position for connecting lines on subscription
@@ -155,16 +129,15 @@ colors.addEventListener( 'click', (event) => {
     const target = event.target;
     const color = target.getAttribute('hex');
     if (!color) return;
-    context.strokeStyle = color;
-});
 
-// Multi-user canvas
+    //current colour
+    document.querySelectorAll('#colors color').forEach(c => c.classList.remove('active'));
+    target.classList.add('active');
+
+    context.strokeStyle = color;
+})
 function draw(x1, x2, y1, y2, style) {
-    context.strokeStyle = style;
-    remoteCtx.beginPath();
-    remoteCtx.moveTo(x1, y1);
-    remoteCtx.lineTo(x2, y2);
-    remoteCtx.stroke(); 
+    console.log(x1, x2, y1, y2, style);
 }
 
 pubnub.subscribe({
@@ -192,5 +165,4 @@ function broadcast(x1, x2, y1, y2, style) {
         },
     });
 }
-
 </script>
