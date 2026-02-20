@@ -1,6 +1,9 @@
 <html>
-<!-- TODO add canvas load history -->
 <!-- TODO add number ONLINE USERS -->
+<!-- TODO add canvas load history -->
+<!-- TODO undo button -->
+<!-- TODO line width PEN SIZE PEN SIZE -->
+<!-- TODO canvas strech fix -->
 <head>
     <title>Shared Canvas</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -52,6 +55,15 @@ div#colors color.active {
     box-shadow: 0 0 10px white;
     transform: scale(1.1);
 }
+div#occupancy {
+    position: absolute; 
+    bottom: 20px;
+    left: 20px;
+    font-size: 20px;
+    font-weight: 800;
+    color: #fff;
+    text-shadow: 1px 1px #2e2e2e;
+}
 </style>
 
 <canvas id=canvas width=500 height=500></canvas>
@@ -66,10 +78,12 @@ div#colors color.active {
     <color hex=#4a412a></color>
 </div>
 
+<div id=occupancy>1000</div>
+
 <script src="pubnub.js"></script>
 <script>
 const userId  = `userId-${Math.random()}.${Math.random()}`;
-const pubnub  = PubNub({});
+const pubnub  = PubNub({userId: userId});
 const channel = 'shared-canvas-v2';
 const body    = document.querySelector('body');
 const canvas  = document.getElementById('canvas');
@@ -163,12 +177,23 @@ pubnub.subscribe({
     }
 });
 
+// Number of users online right now
+const occupancyDiv = document.getElementById('occupancy');
+pubnub.subscribe({
+    channel: `${channel}-pnpres`,
+    messages: (message) => {
+        const occupancy = message.occupancy;
+        occupancyDiv.innerHTML = occupancy;
+    }
+});
+
 function broadcast(state) {
     pubnub.publish({
         channel: channel,
         message: state,
     });
 }
+
 </script>
 </body>
 </html>
