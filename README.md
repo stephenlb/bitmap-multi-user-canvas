@@ -1,29 +1,16 @@
-# Bitmap Game
+# Multi-User Shared Canvas
 
-We will build both versions of the render system.
-First in canvas.
-Second in HTML + CSS.
+A real-time collaborative drawing canvas where multiple users can draw together simultaneously.
 
-## HTML5 Canvas - 
+## Features
 
- - Easier to program and more direct pixel access
+- Draw on a shared canvas with other users in real-time
+- Color picker with preset colors
+- Touch support for mobile devices
+- Canvas history loaded on join
 
- ```javascript
-const canvas = document.getElementById("canvas");
-const ctx = canvas.getContext("2d");
+## Usage
 
-ctx.fillStyle = "green";
-ctx.fillRect(10, 10, 150, 100);
-```
+Open `canvas.html` in a browser. No build step required.
 
-## Divs + CSS
-
- - CSS with pretty animations
-
-```html
-<div id=canvas><e></e><e></e><e></e></div>
-<scrit>
-    const canvas = document.getElementById('canvas');
-    const pixels = document.querySelectorAll('e');
-</scrit>
-```
+Real-time sync is powered by [PubNub SSE](https://www.npmjs.com/package/pubnub-sse).
