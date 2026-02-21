@@ -1,9 +1,4 @@
 <html>
-<!-- ✅ TODO add number ONLINE USERS -->
-<!-- TODO add canvas load history -->
-<!-- TODO undo button -->
-<!-- TODO line width PEN SIZE PEN SIZE -->
-<!-- TODO canvas strech fix -->
 <head>
     <title>Shared Canvas</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -205,43 +200,6 @@ async function loadHistory(channel, limit) {
         processState(state);
     }
 }
-
-
-/*
-// Get All History
-function get_all_history(args) {
-    var channel  = args['channel']
-    ,   callback = args['callback'] || function(){}
-    ,   progress = args['progress'] || function(){}
-    ,   net      = args['net']
-    ,   limit    = +args['limit'] || 5
-    ,   start    = 0
-    ,   count    = 100
-    ,   history  = []
-    ,   params   = {
-            channel  : channel,
-            count    : count,
-            callback : function(messages) {
-                var msgs = messages[0];
-                start = messages[1];
-                progress(msgs);
-                params.start = start;
-                net.each( msgs.reverse(), function(m) {history.push(m)} );
-                callback(history);
-
-                if (history.length >= limit) return;
-                if (msgs.length < count)     return;
-
-                count = 100;
-                add_messages();
-            }
-        };
-
-    add_messages();
-    function add_messages() { net.history(params) }
-}
-*/
-
 </script>
 </body>
 </html>
