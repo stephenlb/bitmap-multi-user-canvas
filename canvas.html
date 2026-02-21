@@ -168,13 +168,15 @@ colors.addEventListener( 'click', (event) => {
     target.classList.add('active');
 });
 
+function processState(state) {
+    const user = getUser(state.userId);
+    Object.assign(user, state);
+    draw(state.userId);
+}
+
 pubnub.subscribe({
     channel: channel,
-    messages: (state) => {
-        const user = getUser(state.userId);
-        Object.assign(user, state);
-        draw(state.userId);
-    }
+    messages: processState,
 });
 
 // Number of users online right now
@@ -194,8 +196,14 @@ function broadcast(state) {
     });
 }
 
-
-function loadHistory(channel, limit) {
+loadHistory(channel);
+async function loadHistory(channel, limit) {
+    let history = await pubnub.history({
+        channel: channel,
+    });
+    for (let state in history[0]) {
+        processState(state);
+    }
 }
 
 

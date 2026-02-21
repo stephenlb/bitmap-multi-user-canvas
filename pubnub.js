@@ -148,7 +148,7 @@ const history = PubNub.history = async (setup={}) => {
     let origin    = setup.origin       || PubNub.origin       || defaultOrigin;
     let authkey   = setup.authKey      || PubNub.authKey      || defaultAuthKey;
     let uuid      = setup.userId       || PubNub.userId       || defaultUserId;
-    let count     = setup.count        || 1;
+    let count     = setup.count        || 100;
     let uri       = `https://${origin}/v2/history/sub-key/${subkey}/channel/${channel}`;
     let params    = `count=${count}&auth=${authkey}&uuid=${uuid}`;
 
